@@ -53,6 +53,12 @@ router.route("/channel/:username").get(verifyJWT, getUserChannelProfile)
 
 router.route("/history").get(verifyJWT, getWatchHistory)
 
+router.route("/test").get((req, res) => {
+    res.json({
+        message: "Route working"
+    })
+})
+
 
 
 export default router
