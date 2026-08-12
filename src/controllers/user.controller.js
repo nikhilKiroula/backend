@@ -60,7 +60,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // check for images, check for avatar
     const avatarLocalPath = req.files?.avatar?.[0]?.path;
-    console.log("req.files : ", req.files);
+    // console.log("req.files : ", req.files);
 
     const coverImageLocalPath = req.files?.coverImage?.[0]?.path
 
@@ -79,8 +79,14 @@ const registerUser = asyncHandler(async (req, res) => {
     // create user object - create entry in db
     const user = await User.create({
         fullName,
-        avatar: avatar.url,
-        coverImage: coverImage?.url || "",
+        avatar: {
+            url: avatar.url,
+            public_id: avatar?.public_id
+        },
+        coverImage: {
+            url: coverImage?.url || "",
+            public_id: coverImage?.public_id || ""
+        },
         email,
         password,
         username: username.toLowerCase()
@@ -299,7 +305,10 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user?._id,
         {
             $set: {
-                coverImage: coverImage.url
+                coverImage: {
+                    url: coverImage.url,
+                    public_id: coverImage?.public_id
+                }
             }
         },
         { new: true }
@@ -328,7 +337,10 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user?._id,
         {
             $set: {
-                avatar: avatar.url
+                avatar: {
+                    url: avatar.url,
+                    public_id: avatar.public_id
+                }
             }
         },
         { new: true }
@@ -412,38 +424,38 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 const getWatchHistory = asyncHandler(async (req, res) => {
     const user = await User.aggregate([
         {
-            $match:{
+            $match: {
                 _id: new mongoose.Types.ObjectId(req.user._id)
             }
         },
 
         {
-            $lookup:{
+            $lookup: {
                 from: "videos",
                 localField: "watchHistory",
                 foreignField: "_id",
                 as: "watchHistory",
-                pipeline:[
+                pipeline: [
                     {
-                        $lookup:{
-                            from:"users",
+                        $lookup: {
+                            from: "users",
                             localField: "owner",
                             foreignField: "_id",
                             as: "owner",
-                            pipeline:[
+                            pipeline: [
                                 {
-                                    $project:{
-                                        fullName:1,
-                                        username:1,
-                                        avatar:1
+                                    $project: {
+                                        fullName: 1,
+                                        username: 1,
+                                        avatar: 1
                                     }
                                 }
                             ]
                         }
                     },
                     {
-                        $addFields:{
-                            owner:{
+                        $addFields: {
+                            owner: {
                                 $first: "$owner"
                             }
                         }
@@ -452,12 +464,12 @@ const getWatchHistory = asyncHandler(async (req, res) => {
             }
         },
 
-        
+
     ])
 
     return res
-    .status(200)
-    .json(new ApiResponse(200, user[0].watchHistory, "watch history fetched successfully"))
+        .status(200)
+        .json(new ApiResponse(200, user[0].watchHistory, "watch history fetched successfully"))
 })
 
 
