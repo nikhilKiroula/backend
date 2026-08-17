@@ -1,7 +1,5 @@
 # 🎥 VideoTube — Backend
 
-> 🚧 **Project Status: In Development — More features are currently being added.**
-
 A complete backend for a video hosting platform inspired by YouTube, built using **Node.js, Express.js, MongoDB, and Mongoose**.
 
 This project demonstrates how to build a scalable backend with modern authentication, authorization, media handling, database relationships, and RESTful APIs.
