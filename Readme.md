@@ -1,9 +1,5 @@
 # 🎥 VideoTube — Backend
 
-A complete backend for a video hosting platform inspired by YouTube, built using **Node.js, Express.js, MongoDB, and Mongoose**.
-
-This project demonstrates how to build a scalable backend with modern authentication, authorization, media handling, database relationships, and RESTful APIs.
-
 A **complete backend for a video hosting platform inspired by YouTube**, built using **Node.js, Express.js, MongoDB, and Mongoose**.
 
 This project is designed to understand and implement real-world backend development practices such as **RESTful APIs, JWT authentication, access and refresh tokens, password hashing, protected routes, file uploads, cloud media storage, MongoDB relationships, aggregation pipelines, pagination, centralized error handling, and reusable middleware**.
@@ -590,26 +586,26 @@ REST APIs
 User Interaction
 ```
 
-The project is being developed incrementally, with additional video-platform features being added as development progresses.
+The core backend functionality has been implemented, covering authentication, authorization, video management, social features, file uploads, cloud storage, database relationships, and RESTful APIs.
 
 ---
 
-# 🚧 Future Improvements
+## 🚀 Optional Future Enhancements
 
-Planned improvements may include:
+The core backend functionality has been implemented. The following features can be added in future versions to further extend the platform:
 
-* [ ] Video search
-* [ ] Video recommendations
-* [ ] Trending videos
-* [ ] Video categories
-* [ ] Notification system
-* [ ] Email verification
-* [ ] Forgot/reset password
-* [ ] API documentation with Swagger
-* [ ] Automated testing
-* [ ] Rate limiting
-* [ ] Production deployment
-* [ ] Advanced video analytics
+* [ ] Video search and advanced filtering
+* [ ] Personalized video recommendations
+* [ ] Trending videos system
+* [ ] Video categories and tagging
+* [ ] Real-time notification system
+* [ ] Email verification and account verification
+* [ ] Forgot/reset password functionality
+* [ ] API documentation with Swagger/OpenAPI
+* [ ] Automated unit and integration testing
+* [ ] API rate limiting and additional security
+* [ ] Production deployment and CI/CD pipeline
+* [ ] Advanced video analytics and creator insights
 
 ---
 
