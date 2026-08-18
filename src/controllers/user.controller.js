@@ -294,15 +294,16 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Cover Image file is missing")
     }
 
-    //TODO: delete old image - assignment
-
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
     if (!coverImage.url) {
         throw new ApiError(400, "Error while uploading on cover image")
     }
 
-    const user = await User.findByIdAndUpdate(req.user?._id,
+    const user = await User.findById(req.user._id).select("coverImage");
+
+    const coverImageToDelete = user.coverImage.public_id;
+    const updatedUser = await User.findByIdAndUpdate(req.user?._id,
         {
             $set: {
                 coverImage: {
@@ -314,40 +315,57 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
         { new: true }
     ).select("-password")
 
+
+    if (coverImageToDelete && updatedUser.coverImage.public_id) {
+        await deleteOnCloudinary(coverImageToDelete);
+    }
+
     return res
         .status(200)
-        .json(new ApiResponse(200, user, "Cover Image updated successfully"))
+        .json(new ApiResponse(200, updatedUser, "Cover Image updated successfully"))
 })
 
-const updateUserAvatar = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path
+const updateUserAvatar = asyncHandler(async(req, res) => {
+    const avatarLocalPath = req.file?.path;
 
     if (!avatarLocalPath) {
-        throw new ApiError(400, "Avatar file is missing")
+        throw new ApiError(400, "Avatar file is missing");
     }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath)
-
-    // TODO: delete old avatar image --assignment
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
 
     if (!avatar.url) {
-        throw new ApiError(400, "Error while uploading on avatar")
+        throw new ApiError(400, "Error while uploading avatar");
     }
 
-    const user = await User.findByIdAndUpdate(req.user?._id,
+    const user = await User.findById(req.user._id).select("avatar");
+
+    const avatarToDelete = user.avatar.public_id;
+
+    const updatedUser = await User.findByIdAndUpdate(
+        req.user?._id,
         {
             $set: {
                 avatar: {
-                    url: avatar.url,
-                    public_id: avatar.public_id
+                    public_id: avatar.public_id,
+                    url: avatar.secure_url
                 }
             }
         },
         { new: true }
-    ).select("-password")
+    ).select("-password");
 
-    return res.status(200).json(new ApiResponse(200, user, "Avatar updated successfully"))
-})
+    if (avatarToDelete && updatedUser.avatar.public_id) {
+        await deleteOnCloudinary(avatarToDelete);
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, updatedUser, "Avatar update successfull")
+        )
+});
+
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
     const { username } = req.params
